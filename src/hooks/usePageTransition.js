@@ -1,5 +1,7 @@
-﻿/** Paginaovergangen — versie 2.0 | Laatst gewijzigd: 2026-11-04. Ook bij terug/vooruit en snelle navigatie. */
+﻿/** Paginaovergangen — versie 2.1 | Laatst gewijzigd: 2026-11-16. Ook bij terug/vooruit en snelle navigatie. */
 import { useLayoutEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
+import { startPushTransition, supportsPush } from '../lib/pushTransition.js'
 
 // Houdt de vorige pagina vast totdat het doek sluit; de nieuwe pagina verschijnt eronder.
 export function usePageTransition(root, pageId, settings, editing) {
@@ -18,6 +20,28 @@ export function usePageTransition(root, pageId, settings, editing) {
     const previous = layer.current
     const element = previous || document.createElement('div')
     const direct = editing || reduced.matches || kind === 'none'
+    // 'push' schuift de pagina's zelf omhoog; daar is geen kleurdoek voor nodig.
+    if (kind === 'push') {
+      if (displayed.current === pageId) return
+      let current = true
+      // De microtask houdt de paginawissel uit de synchrone effectfase.
+      Promise.resolve().then(() => {
+        if (!current) return
+        const show = () => {
+          displayed.current = pageId
+          setDisplayedId(pageId)
+        }
+        if (direct || !supportsPush(document)) return show()
+        // flushSync zet de nieuwe pagina in de DOM voordat de browser het eindbeeld vastlegt.
+        startPushTransition(document, duration * 2, () => flushSync(show)).then(() => {
+          if (current && !editing)
+            root.current?.querySelector('main')?.focus({ preventScroll: true })
+        })
+      })
+      return () => {
+        current = false
+      }
+    }
     if (displayed.current === pageId && !previous) return
     element.className = 'page-transition-cover'
     element.setAttribute('aria-hidden', 'true')

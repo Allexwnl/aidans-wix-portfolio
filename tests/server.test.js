@@ -1,8 +1,9 @@
-/** Workergrenzen — versie 1.0 | Laatst gewijzigd: 2026-10-29. Afwijzen vóór GitHub wordt benaderd. */
+/** Workergrenzen — versie 1.1 | Laatst gewijzigd: 2026-11-16. Afwijzen vóór GitHub wordt benaderd. */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import worker from '../server/worker.js'
 import { resolveRepository } from '../server/repositories.js'
+import { isAdminUid } from '../server/auth.js'
 
 // Een bezoeker zonder token kan geen foto's uploaden of opslagbronnen aanmaken.
 test('onbevoegde upload wordt geweigerd', async () => {
@@ -66,4 +67,17 @@ test('opslag blijft beperkt tot de gekozen eigenaar en media-prefix', () => {
       resolveRepository(new Request('https://api.example/upload?source=Allexwnl/../secret'), env),
     /opslagbron/
   )
+})
+
+// Meerdere beheerders zijn toegestaan, maar alleen met een exact overeenkomende UID.
+test('alleen ingestelde beheerders krijgen toegang tot de opslag', () => {
+  const env = { ADMIN_UID: 'uid-een, uid-twee' }
+  assert.equal(isAdminUid('uid-een', env), true)
+  assert.equal(isAdminUid('uid-twee', env), true)
+  assert.equal(isAdminUid('uid', env), false)
+  assert.equal(isAdminUid('uid-een,uid-twee', env), false)
+  assert.equal(isAdminUid('', env), false)
+  assert.equal(isAdminUid(undefined, env), false)
+  assert.equal(isAdminUid('uid-een', { ADMIN_UID: '' }), false)
+  assert.equal(isAdminUid('uid-een', {}), false)
 })

@@ -1,4 +1,4 @@
-/** Overgangregie — versie 1.0 | Laatst gewijzigd: 2026-10-29. Globaal gedrag tussen pagina's. */
+/** Overgangregie — versie 1.1 | Laatst gewijzigd: 2026-11-16. Globaal gedrag tussen pagina's. */
 export function PageMotionPanel({ site, change }) {
   // Elke wijziging bewaart alle overige thema- en websiteinstellingen.
   const update = (patch) =>
@@ -14,6 +14,7 @@ export function PageMotionPanel({ site, change }) {
         >
           <option value="none">Direct</option>
           <option value="fade">Zachte vervaging</option>
+          <option value="push">Pagina schuift omhoog</option>
           <option value="curtain">Filmdoek omhoog</option>
           <option value="slide-left">Filmdoek naar links</option>
           <option value="slide-right">Filmdoek naar rechts</option>
@@ -32,7 +33,7 @@ export function PageMotionPanel({ site, change }) {
         <span>{site.settings?.transitionDuration || 450} ms</span>
       </label>
       <label className="field">
-        Kleur overgang
+        Kleur overgang (filmdoek en vervaging)
         <input
           type="color"
           value={site.settings?.transitionColor || '#23251f'}
@@ -40,6 +41,7 @@ export function PageMotionPanel({ site, change }) {
         />
       </label>
       <p className="helper-text">
+        Bij 'Pagina schuift omhoog' duwt de nieuwe pagina de oude weg; de duur geldt dan dubbel.
         Bekijk via de navigatie in Voorbeeld. Werkt ook op mobiel en schakelt direct bij minder
         beweging.
       </p>

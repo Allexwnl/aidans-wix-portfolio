@@ -1619,3 +1619,35 @@ summary:focus-visible,
     grid-template-columns: repeat(var(--mobile-gallery-columns, 1), minmax(0, 1fr));
   }
 }
+/* Schuifovergang: de oude pagina schuift omhoog weg, de nieuwe komt van onderen binnen. */
+@keyframes push-out {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes push-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+html.vt-push::view-transition-old(root),
+html.vt-push::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation-duration: var(--push-duration, 1500ms);
+  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  animation-fill-mode: both;
+}
+html.vt-push::view-transition-old(root) {
+  animation-name: push-out;
+}
+html.vt-push::view-transition-new(root) {
+  animation-name: push-in;
+}
+/* Minder beweging: de pagina wisselt zonder schuiven. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

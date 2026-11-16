@@ -72,6 +72,7 @@ De browsertests controleren geneste publicaties, opgemaakte tekst, een echt font
 - **Navigatie → Footer**: footer aan/uit, woordmerk en jaartal aan/uit, voettekst, eigen kleuren en links.
 - **Afbeelding**: alttekst, verhouding, vullen of hele foto tonen, focuspunt en het optionele label onbewerkt/bewerkt. Voor galerijfoto's staan dezelfde instellingen per foto onder Foto's.
 - **Galerijweergave**: carousel, raster of lijst. Bij raster kies je het aantal kolommen, apart voor mobiel; bij carousel kun je paginapunten tonen.
+- **Vormgeving → Paginaovergangen → Pagina schuift omhoog**: de nieuwe pagina duwt de oude naar boven weg, zoals op inigo.film. Dit gebruikt de View Transitions API van de browser; oudere browsers en 'minder beweging' wisselen direct.
 - **Tabletvoorbeeld**: derde knop naast Desktop en Mobiel, 820 px breed. Tablet gebruikt de desktopindeling; de mobiele instellingen gelden tot 600 px.
 - **Publicatiestatus**: de werkbalk toont 'Nog niet gepubliceerd', 'Wijzigingen nog niet live' of 'Live is actueel'. Een mislukte opslag heeft de knop 'Opnieuw proberen'.
 
@@ -119,10 +120,10 @@ Firebase blijft op Spark. Er zijn geen Firebase Cloud Functions of Cloud Storage
 
 ## GitHub-foto's aansluiten
 
-`Allexwnl/aidans-portfolio` is voor **code**. De Worker mag daar niet ongemerkt foto's plaatsen. Gebruik een aparte **publieke** bron, bijvoorbeeld `Allexwnl/aidan-media-basis`.
+De code staat in `Allexwnl/aidans-wix-portfolio`. Foto's gaan naar de aparte **publieke** mediarepository `Allexwnl/aidans-portfolio`; die staat als `MEDIA_REPO` in `wrangler.jsonc`. Extra bronnen heten `aidan-media-<naam>`.
 
-1. Maak een openbare mediarepository op het juiste account of configureer de onderstaande aanmaakfunctie.
-2. Vul in `wrangler.jsonc` de `ADMIN_UID` (dezelfde als bij Firebase), `MEDIA_OWNER`, `MEDIA_REPO` en `ALLOWED_ORIGINS` in. Origins bevatten schema en eventuele poort, zonder afsluitende slash. Voeg later je echte websitedomein toe.
+1. De mediarepository `Allexwnl/aidans-portfolio` bestaat al en is openbaar en leeg; de eerste upload maakt de map `media/` aan.
+2. `ADMIN_UID` in `wrangler.jsonc` bevat de Firebase-UID's van de beheerders, gescheiden door een komma. Iedere UID heeft ook een eigen document `admins/<UID>` in Firestore nodig; `MEDIA_OWNER`, `MEDIA_REPO` en `ALLOWED_ORIGINS` (lokaal en de Netlify-site) staan al ingevuld. Origins bevatten schema en eventuele poort, zonder afsluitende slash. Voeg later je echte websitedomein toe.
 3. Stel `GITHUB_TOKEN` alleen als Worker-secret in. Gebruik minimale rechten voor de gekozen mediarepositories: metadata lezen en contents lezen/schrijven. Nooit als `VITE_`-variabele of in de broncode zetten.
 
    ```powershell
@@ -144,7 +145,7 @@ Foto's in een publieke repository zijn meteen openbaar, ook als de pagina nog co
 
 ## Hosting en code
 
-Er is nog geen externe deployment of push gedaan. De lokale Git-repository is geïnitialiseerd op `main`, met `https://github.com/Allexwnl/aidans-portfolio.git` als `origin`. De bestanden zijn nog niet gecommit, zodat je de volledige eerste versie kunt beoordelen. `.env.local`, node_modules, buildoutput en testartefacten zijn genegeerd.
+De code staat op `main` in `https://github.com/Allexwnl/aidans-wix-portfolio.git` (`origin`). `.env.local`, node_modules, buildoutput en testartefacten zijn genegeerd.
 
 De app blijft in de bestaande projectmap. Voor Cloudflare Pages: bouw met `npm run build`, outputmap `dist`, zet dezelfde publieke Firebase-variabelen bij de build en configureer de Worker-URL. `public/_redirects` ondersteunt directe React-paginapaden. Voeg het domein toe aan Firebase Authorized domains en aan de Worker-origins.
 
