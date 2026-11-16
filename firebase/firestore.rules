@@ -1,0 +1,45 @@
+// Firestore Rules — versie 1.0 | Laatst gewijzigd: 2026-10-29. Alleen expliciet toegestane UID's mogen schrijven.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Maak admins/{uid} alleen via de Firebase-console; clients mogen zichzelf niet toevoegen.
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    // Een ontbrekende concept- of herstelverwijzing houdt opruimen niet tegen.
+    function unreferenced(kind, snapshotId) {
+      return !exists(/databases/$(database)/documents/sites/portfolio/documents/$(kind))
+        || get(/databases/$(database)/documents/sites/portfolio/documents/$(kind)).data.snapshotId != snapshotId;
+    }
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+    match /sites/portfolio/documents/{kind} {
+      allow read: if kind == 'live' || isAdmin();
+      allow create, update: if isAdmin() && kind in ['draft', 'live', 'previous']
+        && request.resource.data.keys().hasOnly(['snapshotId', 'parts', 'schemaVersion', 'revision', 'savedAt'])
+        && request.resource.data.snapshotId is string
+        && request.resource.data.schemaVersion == 1
+        && request.resource.data.parts is int
+        && request.resource.data.parts > 0
+        && request.resource.data.parts <= 100
+        && request.resource.data.savedAt is string;
+      allow delete: if false;
+    }
+    match /sites/portfolio/snapshots/{snapshotId}/chunks/{chunkId} {
+      // Alleen de actieve publicatie is openbaar; concept- en eerdere snapshots blijven privé.
+      allow read: if isAdmin() || get(/databases/$(database)/documents/sites/portfolio/documents/live).data.snapshotId == snapshotId;
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['text'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 640000;
+      allow update: if false;
+      // Opruimen mag uitsluitend als geen actuele versie dit snapshot nog gebruikt.
+      allow delete: if isAdmin()
+        && unreferenced('draft', snapshotId)
+        && unreferenced('live', snapshotId)
+        && unreferenced('previous', snapshotId);
+    }
+  }
+}

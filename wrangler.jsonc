@@ -1,0 +1,14 @@
+// Workerconfiguratie — versie 1.0 | Laatst gewijzigd: 2026-10-29. Geen private sleutels in dit bestand.
+{
+  "name": "aidan-media",
+  "main": "server/worker.js",
+  "compatibility_date": "2026-10-29",
+  "vars": {
+    "FIREBASE_PROJECT_ID": "aidans-portfolio-41dc9",
+    "ALLOWED_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173,http://127.0.0.1:5175",
+    "MEDIA_OWNER": "Allexwnl",
+    "MEDIA_REPO": "",
+    "ADMIN_UID": "",
+    "ALLOW_CREATE_SOURCES": "false"
+  }
+}
