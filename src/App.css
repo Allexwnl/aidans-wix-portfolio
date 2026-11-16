@@ -120,7 +120,8 @@
   background: #edf0e7;
   color: #35472b;
 }
-.save-indicator {
+.save-indicator,
+.publish-state {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1075,6 +1076,12 @@
   padding: 0;
   color: inherit;
 }
+/* Herstelknop in een foutmelding: onderstreept zodat hij als actie herkenbaar is. */
+.toast > .toast-retry {
+  text-decoration: underline;
+  font-size: inherit;
+  white-space: nowrap;
+}
 .toast.error {
   background: #fff5ed;
   color: #a76042;
@@ -1151,7 +1158,8 @@
   }
 }
 @media (max-width: 1150px) {
-  .save-indicator {
+  .save-indicator,
+  .publish-state {
     display: none;
   }
   .toolbar-page {
@@ -1669,4 +1677,40 @@
 .account-reference {
   overflow-wrap: anywhere;
   font-size: 13px;
+}
+/* Bestemmingskeuze voor links: soort, pagina/adres en eventueel sectie onder elkaar. */
+.link-target {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.link-target > select,
+.link-target > input {
+  border: 1px solid #e2e5da;
+  border-radius: 4px;
+  padding: 9px 10px;
+  background: #fff;
+  color: #626b56;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1.5;
+}
+/* Tabletvoorbeeld: vaste breedte van 820 px, net als het mobiele voorbeeld passend geschaald. */
+.canvas-surround.device-tablet {
+  width: 820px;
+  max-width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 12px 35px #343a2820;
+}
+/* Afbeeldingsinstellingen binnen een item of bouwsteen. */
+.image-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.image-settings small {
+  font-size: 8px;
+  color: #a5ae96;
 }

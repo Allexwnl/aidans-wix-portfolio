@@ -1,3 +1,4 @@
+/** Lintregels — versie 1.1 | Laatst gewijzigd: 2026-11-16. ESLint voor React- en browsercode. */
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'

@@ -2,7 +2,7 @@
 
 Visuele portfolio-websitebouwer in React en Vite. Een filmisch startontwerp met grote videobeelden en rustige typografie, met Inigo als belangrijkste inspiratie. Je kunt ook helemaal leeg beginnen.
 
-Versie: 1.0 · Laatst gewijzigd: 29 oktober 2026.
+Versie: 1.1 · Laatst gewijzigd: 16 november 2026.
 
 ## Lokaal bekijken
 
@@ -48,25 +48,38 @@ YouTube bepaalt de kwaliteit tijdens afspelen; de site kan geen 1080p afdwingen.
 
 ## Nieuwe editor- en filmgereedschappen
 
-- **Toevoegen ? Container**: voeg raster, rij of stapel toe. Selecteer een container voordat je een bouwsteen toevoegt. Verplaats bestaande inhoud via de lagenboom of **Vrije indeling ? Plaatsen in**. Kopi?ren/verwijderen werkt voor de volledige inhoud.
+- **Toevoegen → Container**: voeg raster, rij of stapel toe. Selecteer een container voordat je een bouwsteen toevoegt. Verplaats bestaande inhoud via de lagenboom of **Vrije indeling → Plaatsen in**. Kopiëren/verwijderen werkt voor de volledige inhoud.
 - **Canvasgrepen** rechtsboven de selectie: verplaatsen of breedte aanpassen. Pijltjestoetsen werken ook; Shift maakt grotere stappen. Mobiele waarden blijven apart.
 - **Tekstopmaak**: selecteer woorden in het canvas voor vet, cursief, onderstrepen, doorhalen en links. Het eigenschappenpaneel bepaalt de stijl per tekstveld en apparaat.
-- **Vormgeving ? Eigen lettertypen**: upload een webfont. Het font gaat mee in concept, publicatie en JSON-export. Verwijderen herstelt verwijzingen. Grote fonts kunnen de beperkte lokale browseropslag eerder vullen; cloudinhoud heeft een grens van 8 MiB.
-- **Videoblok ? Filmische presentatie**: ??n knop voor de rustige projectstijl met groot filmbeeld, projectgegevens en bioscoopvenster. Los instelbaar: omslag/project/minimaal, inline/bioscoop/zonder geluid starten, breedbeeld 21:9, kaderuitbreiding of parallax tijdens scrollen.
-- **Animatie**: dertien presets, duur, vertraging, bewegingscurve en herhalen. **Animatie bekijken** opent het voorbeeld. **Vormgeving ? Paginaovergangen** kiest vervaging of filmdoek. Minder beweging wordt gerespecteerd.
+- **Vormgeving → Eigen lettertypen**: upload een webfont. Het font gaat mee in concept, publicatie en JSON-export. Verwijderen herstelt verwijzingen. Grote fonts kunnen de beperkte lokale browseropslag eerder vullen; cloudinhoud heeft een grens van 8 MiB.
+- **Videoblok → Filmische presentatie**: één knop voor de rustige projectstijl met groot filmbeeld, projectgegevens en bioscoopvenster. Los instelbaar: omslag/project/minimaal, inline/bioscoop/zonder geluid starten, breedbeeld 21:9, kaderuitbreiding of parallax tijdens scrollen.
+- **Animatie**: dertien presets, duur, vertraging, bewegingscurve en herhalen. **Animatie bekijken** opent het voorbeeld. **Vormgeving → Paginaovergangen** kiest vervaging of filmdoek. Minder beweging wordt gerespecteerd.
 
 De browsertests controleren geneste publicaties, opgemaakte tekst, een echt fontbestand, desktop/mobiel, filmvenster sluiten/focus en paginaovergangen. YouTube is in de interactietest vervangen door een testspeler; afspeelbaarheid van Aidans uiteindelijke video's moet met die links worden gecontroleerd. Het testfont ABeeZee heeft de meegeleverde OFL-licentie in tests/fixtures.
 
 ## Zichtbaarheid, navigatie en werkruimte
 
 - **Onderdelen aan / uit** in de eigenschappen: titel, tekst, bijschriften, carouselknoppen, projectgegevens, filters en contactknop waar toepasselijk. Uitgeschakelde inhoud blijft opgeslagen. Een hele uitgeschakelde bouwsteen blijft gedimd selecteerbaar in de editor en ontbreekt in preview/live.
-- **Navigatie ? Navbarvariant**: klassiek, gecentreerd, zwevend of compact uitklapmenu. Woordmerk, tekst naast logo en pijlen kunnen aan/uit. Eigen kleuren of themakleuren en vaste navigatie zijn instelbaar.
+- **Navigatie → Navbarvariant**: klassiek, gecentreerd, zwevend of compact uitklapmenu. Woordmerk, tekst naast logo en pijlen kunnen aan/uit. Eigen kleuren of themakleuren en vaste navigatie zijn instelbaar.
 - **Animatie** bevat ook links/rechts, van boven, draaien en uitzoomen, met instelbare afstand. Paginaovergangen vangen klikken, browser-terug/vooruit en snelle vervolgnavigatie af. Ze draaien in Voorbeeld en op de bezoekerssite; bewerken wisselt direct.
 - **Zijpanelen**: sleep de binnenrand om breder/smaller te maken; sleep helemaal dicht of gebruik het pijltje om in/uit te klappen. De rand ondersteunt pijltjestoetsen en Home/End. Breedtes blijven lokaal bewaard. Op smalle schermen wordt de gestapelde studio gebruikt.
 
+## Toegevoegd op 16 november
+
+- **Animatie → Start**: kies of een animatie begint zodra de bouwsteen in beeld komt, pas verder in beeld, of direct bij het openen van de pagina. **Na elkaar verschijnen** laat de onderdelen van een bouwsteen één voor één binnenkomen. **Sterkte** schaalt afstand, zoom en onscherpte.
+- **Mobiele animatie**: zet het voorbeeld op Mobiel en open Animatie; effect, duur, vertraging en sterkte gelden dan alleen voor mobiel. 'Mobiel gelijk aan desktop' wist de afwijking.
+- **Navigatie → Bestemming**: een menulink, submenu of footerlink wijst naar een pagina, een sectie op een pagina of een externe link (https, mailto of tel). Externe webadressen openen in een nieuw tabblad.
+- **Navigatie → Footer**: footer aan/uit, woordmerk en jaartal aan/uit, voettekst, eigen kleuren en links.
+- **Afbeelding**: alttekst, verhouding, vullen of hele foto tonen, focuspunt en het optionele label onbewerkt/bewerkt. Voor galerijfoto's staan dezelfde instellingen per foto onder Foto's.
+- **Galerijweergave**: carousel, raster of lijst. Bij raster kies je het aantal kolommen, apart voor mobiel; bij carousel kun je paginapunten tonen.
+- **Tabletvoorbeeld**: derde knop naast Desktop en Mobiel, 820 px breed. Tablet gebruikt de desktopindeling; de mobiele instellingen gelden tot 600 px.
+- **Publicatiestatus**: de werkbalk toont 'Nog niet gepubliceerd', 'Wijzigingen nog niet live' of 'Live is actueel'. Een mislukte opslag heeft de knop 'Opnieuw proberen'.
+
+De browsertests starten met nepwaarden voor Firebase en werken dus ook zonder `.env.local`.
+
 ## Netlify
 
-Deze projectmap is gekoppeld aan **aidans-portfolio-studio** op account Allexwnl. Online: https://aidans-portfolio-studio.netlify.app ? studio: https://aidans-portfolio-studio.netlify.app/studio. De loginpagina is via HTTPS gecontroleerd; online opslag wacht nog op Firebase-inrichting. De koppeling staat lokaal in de genegeerde .netlify-map. netlify.toml bouwt met npm run build en publiceert dist; public/_redirects ondersteunt /studio en directe projectpaden. De vier publieke Firebase-instellingen staan ook als Netlify-buildvariabelen ingesteld.
+Deze projectmap is gekoppeld aan **aidans-portfolio-studio** op account Allexwnl. Online: https://aidans-portfolio-studio.netlify.app · studio: https://aidans-portfolio-studio.netlify.app/studio. De loginpagina is via HTTPS gecontroleerd; online opslag wacht nog op Firebase-inrichting. De koppeling staat lokaal in de genegeerde .netlify-map. netlify.toml bouwt met npm run build en publiceert dist; public/_redirects ondersteunt /studio en directe projectpaden. De vier publieke Firebase-instellingen staan ook als Netlify-buildvariabelen ingesteld.
 
 Dit gebruikt voorlopig handmatige deployments vanuit deze map. De GitHub-repository heeft nog geen gepushte commit van deze code; automatisch deployen na een Git-push is daarom nog niet aangesloten. De bestaande andere portfoliosite op het Netlify-account is niet gewijzigd.
 
@@ -77,7 +90,7 @@ npm run build
 npx netlify-cli deploy --prod --no-build --dir dist
 ~~~
 
-Content publiceren vanuit de studio vereist Firebase-inrichting hieronder. Voeg **aidans-portfolio-studio.netlify.app** toe aan Authentication ? Settings ? Authorized domains. Een incomplete productieconfiguratie opent geen lokale proefeditor.
+Content publiceren vanuit de studio vereist Firebase-inrichting hieronder. Voeg **aidans-portfolio-studio.netlify.app** toe aan Authentication → Settings → Authorized domains. Een incomplete productieconfiguratie opent geen lokale proefeditor.
 
 ## Echte Firebase aansluiten
 
@@ -86,7 +99,7 @@ De studio gebruikt Firebase Email/Password voor bestaande accounts. Wachtwoorden
 De clientcode is aangesloten op project `aidans-portfolio-41dc9`; de accountinrichting hieronder moet nog gebeuren. Een publieke webconfiguratie geeft geen beheerrechten.
 
 1. Open het project in de Firebase-console en maak een Cloud Firestore-database in productie-/vergrendelde modus. Kies bewust de regio voordat je de database maakt.
-2. Schakel onder Authentication → Sign-in method Email/Password in. Gebruik het bestaande e-mail/wachtwoord-account of voeg het toe onder Authentication ? Users. Voeg onder Authorized domains je lokale en uiteindelijke domein toe; nieuwe projecten staan localhost mogelijk niet standaard toe.
+2. Schakel onder Authentication → Sign-in method Email/Password in. Gebruik het bestaande e-mail/wachtwoord-account of voeg het toe onder Authentication → Users. Voeg onder Authorized domains je lokale en uiteindelijke domein toe; nieuwe projecten staan localhost mogelijk niet standaard toe.
 3. Publiceer de inhoud van `firebase/firestore.rules` via Firestore → Rules. Alternatief via de Firebase CLI:
 
    ```powershell

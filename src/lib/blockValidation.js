@@ -1,6 +1,8 @@
-/** Bouwsteenvalidatie — versie 1.0 | Laatst gewijzigd: 2026-10-29. Controleert ook geneste inhoud. */
+/** Bouwsteenvalidatie — versie 1.1 | Laatst gewijzigd: 2026-11-16. Controleert ook geneste inhoud. */
 import { youtubeId } from './validation.js'
 import { validateRichText } from './richText.js'
+import { validateMotion } from './motion.js'
+import { validateImageSettings } from './images.js'
 
 // Begrensde diepte en unieke ids voorkomen cycli, onbereikbare selecties en extreem zware imports.
 export function validateBlocks(blocks, fonts, ids = new Set(), depth = 0) {
@@ -43,6 +45,18 @@ export function validateBlocks(blocks, fonts, ids = new Set(), depth = 0) {
       throw new Error('Controleer de items in het raster, de compositie of de galerij.')
     if (block.type === 'video' && block.url && !youtubeId(block.url))
       throw new Error(`Controleer de YouTube-link bij ${block.label}.`)
+    // Onbekende animaties zouden inhoud verborgen kunnen laten.
+    validateMotion(block)
+    // Afbeeldingsinstellingen van de bouwsteen en van iedere galerijfoto.
+    validateImageSettings(block.imageSettings)
+    for (const item of block.items || []) validateImageSettings(item.imageSettings)
+    if (
+      ![undefined, 'carousel', 'grid', 'list'].includes(block.galleryMode) ||
+      [block.galleryColumns, block.mobile?.galleryColumns].some(
+        (count) => count !== undefined && (!Number.isInteger(count) || count < 1 || count > 6)
+      )
+    )
+      throw new Error(`Controleer de galerijweergave bij ${block.label}.`)
     if (block.type === 'container') validateBlocks(block.children, fonts, ids, depth + 1)
     else if (block.children) throw new Error('Alleen containers mogen kinderen bevatten.')
     for (const rich of Object.values(block.richText || {})) {

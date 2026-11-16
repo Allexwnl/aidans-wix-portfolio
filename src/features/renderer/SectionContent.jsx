@@ -1,10 +1,11 @@
-/** Bouwstenen — versie 2.0 | Laatst gewijzigd: 2026-11-04. Tekst, film, beeld en contact. */
+/** Bouwstenen — versie 2.1 | Laatst gewijzigd: 2026-11-16. Tekst, film, beeld en contact. */
 import { EditableText } from './EditableText.jsx'
 import { VideoBlock } from './VideoBlock.jsx'
 import { GalleryBlock } from './GalleryBlock.jsx'
 import { ProjectGrid } from './ProjectGrid.jsx'
 import { ColumnBlock } from './ColumnBlock.jsx'
 import { safeUrl } from '../../lib/validation.js'
+import { imageStyle, photoLabelText } from '../../lib/images.js'
 
 // Kiest de juiste bouwsteen; stijl en inhoud komen volledig uit het document.
 export function SectionContent({ block, editing, onEdit, site, onNavigate }) {
@@ -29,7 +30,16 @@ export function SectionContent({ block, editing, onEdit, site, onNavigate }) {
   if (block.type === 'image')
     return (
       <figure className="image-block section-inner">
-        <img src={safeUrl(block.image, true) || undefined} alt={block.text || ''} loading="lazy" />
+        <img
+          src={safeUrl(block.image, true) || undefined}
+          // Een eigen alttekst gaat voor; anders de tekst van de bouwsteen.
+          alt={block.imageSettings?.alt ?? block.text ?? ''}
+          style={imageStyle(block.imageSettings)}
+          loading="lazy"
+        />
+        {photoLabelText(block.imageSettings) && (
+          <span className="photo-label">{photoLabelText(block.imageSettings)}</span>
+        )}
         <figcaption>
           <EditableText {...props} field="title" tag="span" />
         </figcaption>

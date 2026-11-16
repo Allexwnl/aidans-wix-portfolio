@@ -1,5 +1,6 @@
-/** Media-items — versie 1.0 | Laatst gewijzigd: 2026-10-29. Projecten en carouselfoto's bewerken. */
+/** Media-items — versie 1.1 | Laatst gewijzigd: 2026-11-16. Projecten en carouselfoto's bewerken. */
 import { Plus, Trash2, ArrowUp } from 'lucide-react'
+import { ImagePanel } from './ImagePanel.jsx'
 
 // Bewerkt items binnen een raster/carousel; schoolindeling is optioneel per project.
 export function ItemEditor({ block, update, pages = [], action }) {
@@ -28,6 +29,13 @@ export function ItemEditor({ block, update, pages = [], action }) {
               onChange={(event) => patch(item.id, { image: event.target.value })}
             />
           </label>
+          {block.type === 'gallery' && (
+            <ImagePanel
+              settings={item.imageSettings}
+              fallbackAlt={item.title}
+              onChange={(imageSettings) => patch(item.id, { imageSettings })}
+            />
+          )}
           {block.type === 'grid' && (
             <>
               <label className="field">

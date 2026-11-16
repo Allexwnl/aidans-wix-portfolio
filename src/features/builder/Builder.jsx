@@ -1,4 +1,4 @@
-/** Studio — versie 2.0 | Laatst gewijzigd: 2026-11-04. Verbindt editorpanelen en documentbewerkingen. */
+/** Studio — versie 2.2 | Laatst gewijzigd: 2026-11-16. Verbindt editorpanelen en documentbewerkingen. */
 import { useState } from 'react'
 import {
   ArrowDownLeft,
@@ -24,6 +24,9 @@ import { Toolbar } from './Toolbar.jsx'
 import { Sidebar } from './Sidebar.jsx'
 import { PropertiesPanel } from '../panels/PropertiesPanel.jsx'
 import { Canvas } from '../renderer/Canvas.jsx'
+
+// Vaste voorbeeldbreedtes per apparaat; desktop gebruikt de vrij instelbare breedte.
+const previewWidths = { mobile: 390, tablet: 820 }
 
 // De bouwer bewaart UI-selecties los van de inhoud, zodat preview geen werk verliest.
 export function Builder({ account, onLogout }) {
@@ -273,7 +276,8 @@ export function Builder({ account, onLogout }) {
         setBusy(true)
         const previous = await loadDocument('previous')
         if (!previous?.site) throw new Error('Er is nog geen vorige publicatie.')
-        await publishDocument(previous.site)
+        // De live-status volgt de teruggezette release, zodat datum en melding kloppen.
+        model.setLive(await publishDocument(previous.site))
         setNotice('Vorige publicatie is teruggezet.')
         return
       }
@@ -354,8 +358,8 @@ export function Builder({ account, onLogout }) {
               <span className="workspace-breadcrumb">/ {preview ? 'Voorbeeld' : 'Canvas'}</span>
             </div>
             <div>
-              {device === 'mobile' ? (
-                <span>390 px</span>
+              {device !== 'desktop' ? (
+                <span>{previewWidths[device]} px</span>
               ) : (
                 <label className="viewport-control">
                   <input
@@ -402,7 +406,7 @@ export function Builder({ account, onLogout }) {
               <span className="canvas-lock">{preview ? 'Voorbeeld' : 'Concept'}</span>
             </div>
             <Canvas
-              viewportWidth={device === 'mobile' ? 390 : desktopWidth}
+              viewportWidth={previewWidths[device] || desktopWidth}
               site={model.site}
               pageId={page.id}
               selected={selected}
@@ -431,7 +435,7 @@ export function Builder({ account, onLogout }) {
             </span>
             <span>
               <Monitor size={11} />
-              {device === 'mobile' ? 'Mobiel' : 'Desktop'}
+              {{ mobile: 'Mobiel', tablet: 'Tablet' }[device] || 'Desktop'}
               <span className="foot-dot">·</span>Passend
             </span>
           </div>
@@ -469,6 +473,12 @@ export function Builder({ account, onLogout }) {
           className={`toast ${model.error ? 'error' : ''}`}
         >
           <span>{model.error || notice}</span>
+          {/* Een mislukte opslag is direct opnieuw te proberen, ook bij autosave. */}
+          {model.error && model.status === 'Niet opgeslagen' && (
+            <button className="toast-retry" disabled={busy} onClick={() => action('save')}>
+              Opnieuw proberen
+            </button>
+          )}
           <button
             aria-label="Melding sluiten"
             onClick={() => {

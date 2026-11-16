@@ -1,4 +1,4 @@
-/** Editorstate — versie 1.0 | Laatst gewijzigd: 2026-10-29. Historie, autosave en publiceren. */
+/** Editorstate — versie 1.1 | Laatst gewijzigd: 2026-11-16. Historie, autosave en publiceren. */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { initialSite } from '../data/initialSite.js'
 import { loadDocument, saveDocument, publishDocument } from '../services/storage.js'
@@ -12,6 +12,8 @@ export function useDocument() {
   const [status, setStatus] = useState('Concept laden…')
   const [error, setError] = useState('')
   const [liveAt, setLiveAt] = useState('')
+  // Inhoud van de live release; hiermee is te zien of het concept nog niet gepubliceerd is.
+  const [liveVersion, setLiveVersion] = useState('')
   const [savedVersion, setSavedVersion] = useState(JSON.stringify(initialSite))
   const revision = useRef(0)
   const saved = useRef(JSON.stringify(initialSite))
@@ -33,6 +35,7 @@ export function useDocument() {
           setSavedVersion(saved.current)
         }
         setLiveAt(live?.savedAt || '')
+        setLiveVersion(live?.site ? JSON.stringify(live.site) : '')
         setStatus(draft ? 'Concept geladen' : 'Startontwerp · nog niet opgeslagen')
         setReady(true)
         loaded.current = true
@@ -91,6 +94,7 @@ export function useDocument() {
         if (publish) {
           const release = await publishDocument(site)
           setLiveAt(release.savedAt)
+          setLiveVersion(JSON.stringify(site))
         }
         setStatus(publish ? 'Gepubliceerd' : 'Concept opgeslagen')
       })
@@ -119,6 +123,8 @@ export function useDocument() {
     window.addEventListener('beforeunload', handler)
     return () => window.removeEventListener('beforeunload', handler)
   }, [])
+  // Eén serialisatie per render voor de opslag- en publicatiestatus.
+  const current = JSON.stringify(history.site)
   return {
     ...history,
     change,
@@ -129,7 +135,14 @@ export function useDocument() {
     error,
     setError,
     liveAt,
-    dirty: JSON.stringify(history.site) !== savedVersion,
+    // Werkt de live-status bij na een release buiten persist om, zoals terugzetten.
+    setLive: (release) => {
+      setLiveAt(release.savedAt)
+      setLiveVersion(JSON.stringify(release.site))
+    },
+    dirty: current !== savedVersion,
+    // Waar zodra de werkversie afwijkt van wat bezoekers nu zien.
+    unpublished: Boolean(liveVersion) && current !== liveVersion,
     persist,
   }
 }

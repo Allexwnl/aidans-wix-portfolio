@@ -1,8 +1,11 @@
-/** Paginarenderer — versie 2.0 | Laatst gewijzigd: 2026-11-04. Gedeeld tussen canvas en bezoekerssite. */
+/** Paginarenderer — versie 2.1 | Laatst gewijzigd: 2026-11-16. Gedeeld tussen canvas en bezoekerssite. */
 import { useEffect, useRef } from 'react'
+import { SiteFooter } from './SiteFooter.jsx'
+import { useAnchorNavigation } from '../../hooks/useAnchorNavigation.js'
 import { SiteHeader } from './SiteHeader.jsx'
 import { NodeRenderer } from './NodeRenderer.jsx'
 import { usePageTransition } from '../../hooks/usePageTransition.js'
+import { useRevealMotion } from '../../hooks/useRevealMotion.js'
 import { FontLoader } from './FontLoader.jsx'
 import { IntroOverlay } from './IntroOverlay.jsx'
 
@@ -19,32 +22,11 @@ export function SiteRenderer({
 }) {
   const root = useRef(null)
   const displayedId = usePageTransition(root, pageId, site.settings, editing)
-  const navigate = onNavigate
+  // Een andere pagina begint bovenaan of bij de gekozen sectie; preview omschakelen behoudt de scrollpositie.
+  const navigate = useAnchorNavigation(root, displayedId, pageId, onNavigate)
   const page = site.pages.find((item) => item.id === displayedId) || site.pages[0]
-  // Een andere pagina begint bovenaan; alleen preview omschakelen behoudt de scrollpositie.
-  useEffect(() => {
-    root.current?.ownerDocument.defaultView.scrollTo({ top: 0, behavior: 'instant' })
-  }, [displayedId])
-  useEffect(() => {
-    const Observer = root.current?.ownerDocument.defaultView.IntersectionObserver
-    if (!Observer) return
-    const observer = new Observer(
-      (entries) =>
-        entries.forEach((entry) => {
-          const motion = entry.target.querySelector(':scope > .node-motion')
-          if (!motion) return
-          if (entry.isIntersecting) {
-            motion.classList.add('in-view')
-            if (!motion.dataset.repeat) observer.unobserve(entry.target)
-          } else if (motion.dataset.repeat) {
-            motion.classList.remove('in-view')
-          }
-        }),
-      { threshold: 0, rootMargin: '0px 0px -24px 0px' }
-    )
-    root.current.querySelectorAll('.node-section').forEach((node) => observer.observe(node))
-    return () => observer.disconnect()
-  }, [displayedId, replay, page.sections, editing])
+  // Start de animaties per trigger; compact meldt of de mobiele animatiewaarden gelden.
+  const compact = useRevealMotion(root, editing, `${displayedId}-${replay}`, page.sections)
   useEffect(() => {
     if (!editing || !selected) return
     const node = root.current?.querySelector(`[data-section-id="${CSS.escape(selected)}"]`)
@@ -84,19 +66,12 @@ export function SiteRenderer({
         {page.sections.map((block) => (
           <NodeRenderer
             key={block.id}
-            {...{ block, editing, selected, onSelect, onEdit, site }}
+            {...{ block, editing, selected, onSelect, onEdit, site, compact }}
             onNavigate={navigate}
           />
         ))}
       </main>
-      <footer className="site-footer">
-        <strong>
-          {site.name.toLowerCase()}
-          <span>®</span>
-        </strong>
-        <span>{site.settings?.footer || 'Verhalen in beeld.'}</span>
-        <span>© {new Date().getFullYear()}</span>
-      </footer>
+      <SiteFooter site={site} onNavigate={navigate} />
     </div>
   )
 }

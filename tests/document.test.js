@@ -1,4 +1,4 @@
-/** Documenttests — versie 1.0 | Laatst gewijzigd: 2026-10-29. Publicatievalidatie en onafhankelijke edits. */
+/** Documenttests — versie 1.1 | Laatst gewijzigd: 2026-11-16. Publicatievalidatie en onafhankelijke edits. */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { initialSite } from '../src/data/initialSite.js'
@@ -26,6 +26,45 @@ test('publicatie valideert pagina’s en verwijzingen', () => {
   site.navigation = []
   site.pages[0].sections[1].url = 'https://example.com/video'
   assert.throws(() => validateSite(site), /YouTube/)
+})
+
+// Links, animaties en afbeeldingsinstellingen worden vóór publicatie gecontroleerd.
+test('publicatie weigert kapotte links en onbekende instellingen', () => {
+  const build = (change) => {
+    const site = structuredClone(initialSite)
+    change(site)
+    return site
+  }
+  const link = (value) => (site) =>
+    site.navigation.push({ id: 'x', label: 'Test', children: [], ...value })
+  assert.ok(validateSite(build(link({ kind: 'url', url: 'https://example.com' }))))
+  assert.ok(validateSite(build(link({ kind: 'section', pageId: 'home', sectionId: 'contact' }))))
+  assert.throws(
+    () => validateSite(build(link({ kind: 'url', url: 'javascript:alert(1)' }))),
+    /adres/
+  )
+  assert.throws(
+    () => validateSite(build(link({ kind: 'section', pageId: 'home', sectionId: 'weg' }))),
+    /ontbrekende sectie/
+  )
+  assert.throws(
+    () =>
+      validateSite(
+        build((site) => {
+          site.settings.footerConfig = { links: [{ id: 'f', label: 'Weg', pageId: 'missing' }] }
+        })
+      ),
+    /ontbrekende pagina/
+  )
+  const block = (value) => (site) => Object.assign(site.pages[0].sections[0], value)
+  assert.throws(() => validateSite(build(block({ animation: 'explode' }))), /animatie/)
+  assert.throws(() => validateSite(build(block({ motionTrigger: 'never' }))), /animatie/)
+  assert.throws(
+    () => validateSite(build(block({ imageSettings: { focusX: 140 } }))),
+    /afbeeldingsinstellingen/
+  )
+  assert.throws(() => validateSite(build(block({ galleryMode: 'spiral' }))), /galerij/)
+  assert.ok(validateSite(build(block({ animation: 'stagger', motionTrigger: 'load' }))))
 })
 
 // Historie kan alleen betrouwbaar terugzetten als documentbewerkingen oude snapshots behouden.

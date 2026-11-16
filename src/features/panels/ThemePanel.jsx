@@ -1,4 +1,4 @@
-/** Thema — versie 2.0 | Laatst gewijzigd: 2026-11-04. Globale kleuren en lettertypen. */
+/** Thema — versie 2.1 | Laatst gewijzigd: 2026-11-16. Globale kleuren en lettertypen. */
 import { useRef } from 'react'
 import { FontLoader } from '../renderer/FontLoader.jsx'
 import { PageMotionPanel } from './PageMotionPanel.jsx'
@@ -93,15 +93,6 @@ export function ThemePanel({ site, change }) {
             value={site.settings?.location || ''}
             onChange={(event) =>
               change({ ...site, settings: { ...site.settings, location: event.target.value } })
-            }
-          />
-        </label>
-        <label className="field">
-          Voettekst
-          <input
-            value={site.settings?.footer || ''}
-            onChange={(event) =>
-              change({ ...site, settings: { ...site.settings, footer: event.target.value } })
             }
           />
         </label>

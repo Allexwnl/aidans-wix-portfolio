@@ -1,6 +1,7 @@
-﻿/** Navigatie — versie 2.0 | Laatst gewijzigd: 2026-11-04. Varianten delen links en mobiele bediening. */
+﻿/** Navigatie — versie 2.1 | Laatst gewijzigd: 2026-11-16. Varianten delen links en mobiele bediening. */
 import { useEffect, useRef, useState } from 'react'
 import { sitePath } from '../../lib/navigation.js'
+import { SiteLink } from './SiteLink.jsx'
 
 // Dezelfde navigatiedata werkt in alle stijlen; Escape sluit geopende menu's.
 export function SiteHeader({ site, onNavigate }) {
@@ -68,7 +69,7 @@ export function SiteHeader({ site, onNavigate }) {
               <summary>{item.label} +</summary>
               <div className="site-submenu">
                 {item.children.map((child) => (
-                  <NavLink
+                  <SiteLink
                     key={child.id}
                     item={child}
                     site={site}
@@ -79,35 +80,10 @@ export function SiteHeader({ site, onNavigate }) {
               </div>
             </details>
           ) : (
-            <NavLink key={item.id} {...{ item, site, onNavigate }} close={() => setOpen(false)} />
+            <SiteLink key={item.id} {...{ item, site, onNavigate }} close={() => setOpen(false)} />
           )
         )}
       </nav>
     </header>
-  )
-}
-
-// Gewone en gemodificeerde links behouden hun URL; interne klikken gebruiken de overgang.
-function NavLink({ item, site, onNavigate, close }) {
-  const page = site.pages.find((entry) => entry.id === item.pageId)
-  return (
-    <a
-      href={sitePath(page?.slug || '')}
-      onClick={
-        onNavigate
-          ? (event) => {
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-              event.preventDefault()
-              onNavigate(item.pageId)
-              close()
-              const submenu = event.currentTarget.closest('details')
-              if (submenu) submenu.open = false
-            }
-          : undefined
-      }
-    >
-      {item.label}
-      <span>↗</span>
-    </a>
   )
 }

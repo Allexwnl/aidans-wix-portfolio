@@ -1,4 +1,4 @@
-/** Werkbalk — versie 1.0 | Laatst gewijzigd: 2026-10-29. Preview, apparaatkeuze en opslag. */
+/** Werkbalk — versie 1.2 | Laatst gewijzigd: 2026-11-16. Preview, apparaatkeuze en opslag. */
 import {
   ArrowUpRight,
   Check,
@@ -8,6 +8,7 @@ import {
   Redo2,
   Save,
   Smartphone,
+  Tablet,
   Undo2,
   ArrowLeft,
   LoaderCircle,
@@ -45,6 +46,14 @@ export function Toolbar({ model, page, preview, setPreview, device, setDevice, a
           <Monitor size={16} />
         </button>
         <button
+          aria-label="Tabletvoorbeeld"
+          title="Tablet"
+          className={device === 'tablet' ? 'active' : ''}
+          onClick={() => setDevice('tablet')}
+        >
+          <Tablet size={16} />
+        </button>
+        <button
           aria-label="Mobiel voorbeeld"
           title="Mobiel"
           className={device === 'mobile' ? 'active' : ''}
@@ -75,6 +84,14 @@ export function Toolbar({ model, page, preview, setPreview, device, setDevice, a
         <span className="save-indicator" title={model.status}>
           {busy ? <LoaderCircle size={12} className="spin" /> : <Check size={12} />}
           {model.dirty ? 'Niet opgeslagen' : model.status}
+        </span>
+        {/* Toont of bezoekers de actuele werkversie al zien. */}
+        <span className="publish-state">
+          {!model.liveAt
+            ? 'Nog niet gepubliceerd'
+            : model.unpublished
+              ? 'Wijzigingen nog niet live'
+              : 'Live is actueel'}
         </span>
         <button className="button secondary preview-button" onClick={() => setPreview(!preview)}>
           {preview ? <ArrowLeft size={14} /> : <Eye size={14} />}

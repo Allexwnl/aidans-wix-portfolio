@@ -1,4 +1,6 @@
-/** E-mailauthenticatie — versie 1.0 | Laatst gewijzigd: 2026-11-04. SDK-integratie met nagebootste Firebase-antwoorden. */
+/** E-mailauthenticatie — versie 1.1 | Laatst gewijzigd: 2026-11-16. SDK-integratie met nagebootste Firebase-antwoorden. */
+// Buffer komt expliciet uit Node, zodat de lintregels voor browsercode blijven gelden.
+import { Buffer } from 'node:buffer'
 import { test, expect } from '@playwright/test'
 
 // Ongeldige gegevens tonen dezelfde melding; wachtwoorden worden na een poging geleegd.

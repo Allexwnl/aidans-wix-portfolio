@@ -1,8 +1,10 @@
-/** Menu-editor — versie 2.0 | Laatst gewijzigd: 2026-11-04. Bewerkbare links en één laag submenu's. */
+/** Menu-editor — versie 2.1 | Laatst gewijzigd: 2026-11-16. Links naar pagina, sectie of URL; één laag submenu's. */
 import { NavbarPanel } from './NavbarPanel.jsx'
+import { FooterPanel } from './FooterPanel.jsx'
+import { LinkTargetField } from './LinkTargetField.jsx'
 import { Plus, Trash2, ArrowUp } from 'lucide-react'
 
-// Slaat de menuboom als data op; elke bestemming verwijst naar een bestaande pagina.
+// Slaat de menuboom als data op; een bestemming is een pagina, een sectie of een externe URL.
 export function NavigationPanel({ site, change }) {
   // Vervangt één menu-item en laat de rest van de structuur intact.
   const patch = (id, value) =>
@@ -54,19 +56,15 @@ export function NavigationPanel({ site, change }) {
               onChange={(event) => patch(item.id, { label: event.target.value })}
             />
           </label>
-          <label className="field">
-            Pagina
-            <select
-              value={item.pageId}
-              onChange={(event) => patch(item.id, { pageId: event.target.value })}
-            >
-              {site.pages.map((page) => (
-                <option key={page.id} value={page.id}>
-                  {page.title}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="field">
+            Bestemming
+            <LinkTargetField
+              name="Menulink"
+              item={item}
+              site={site}
+              onChange={(value) => patch(item.id, value)}
+            />
+          </div>
           {item.children.map((child) => (
             <div className="submenu-editor" key={child.id}>
               <input
@@ -80,23 +78,18 @@ export function NavigationPanel({ site, change }) {
                   })
                 }
               />
-              <select
-                aria-label="Submenu pagina"
-                value={child.pageId}
-                onChange={(event) =>
+              <LinkTargetField
+                name="Submenu"
+                item={child}
+                site={site}
+                onChange={(value) =>
                   patch(item.id, {
                     children: item.children.map((entry) =>
-                      entry.id === child.id ? { ...entry, pageId: event.target.value } : entry
+                      entry.id === child.id ? { ...entry, ...value } : entry
                     ),
                   })
                 }
-              >
-                {site.pages.map((page) => (
-                  <option key={page.id} value={page.id}>
-                    {page.title}
-                  </option>
-                ))}
-              </select>
+              />
               <button
                 className="icon-button danger"
                 aria-label="Submenu verwijderen"
@@ -146,6 +139,7 @@ export function NavigationPanel({ site, change }) {
         <Plus size={14} />
         Menulink toevoegen
       </button>
+      <FooterPanel site={site} change={change} />
     </>
   )
 }

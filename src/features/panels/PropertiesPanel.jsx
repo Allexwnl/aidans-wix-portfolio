@@ -1,4 +1,4 @@
-/** Eigenschappen — versie 2.0 | Laatst gewijzigd: 2026-11-04. Inhoud, layout en beweging van de selectie. */
+/** Eigenschappen — versie 2.1 | Laatst gewijzigd: 2026-11-16. Inhoud, layout en beweging van de selectie. */
 import {
   Copy,
   Film,
@@ -14,6 +14,8 @@ import { useState } from 'react'
 import { VisibilityPanel } from './VisibilityPanel.jsx'
 import { VideoStylePanel } from './VideoStylePanel.jsx'
 import { MotionPanel } from './MotionPanel.jsx'
+import { ImagePanel } from './ImagePanel.jsx'
+import { GalleryPanel } from './GalleryPanel.jsx'
 import { LayoutPanel } from './LayoutPanel.jsx'
 import { TypographyPanel } from './TypographyPanel.jsx'
 import { ItemEditor } from './ItemEditor.jsx'
@@ -307,6 +309,17 @@ export function PropertiesPanel({ block, update, action, device, replay, pages, 
                 Themakleuren gebruiken
               </button>
             </div>
+            {block.type === 'image' && (
+              <div className="settings-group">
+                <h3>Afbeelding</h3>
+                <ImagePanel
+                  settings={block.imageSettings}
+                  fallbackAlt={block.text}
+                  onChange={(imageSettings) => update({ imageSettings })}
+                />
+              </div>
+            )}
+            {block.type === 'gallery' && <GalleryPanel {...{ block, update, device }} />}
             {['grid', 'gallery'].includes(block.type) && (
               <ItemEditor block={block} update={update} action={action} pages={pages} />
             )}
@@ -315,7 +328,7 @@ export function PropertiesPanel({ block, update, action, device, replay, pages, 
             )}
           </>
         ) : (
-          <MotionPanel {...{ block, update, replay }} />
+          <MotionPanel {...{ block, update, replay, device }} />
         )}
       </div>
       <div className="properties-footer">

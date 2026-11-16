@@ -1,7 +1,10 @@
-/** Paginaverwijzingen — versie 2.0 | Laatst gewijzigd: 2026-11-04. Verwijderen zonder kapotte menulinks. */
+/** Paginaverwijzingen — versie 2.1 | Laatst gewijzigd: 2026-11-16. Verwijderen zonder kapotte menulinks. */
 import { mapBlocks } from './tree.js'
-// Verwijdert verwijzingen naar een pagina uit navigatie én projectkaarten.
+// Verwijdert verwijzingen naar een pagina uit navigatie, footer én projectkaarten.
 export function removePage(site, pageId) {
+  // Externe links hebben geen pagina nodig en blijven dus staan.
+  const keeps = (item) => item.kind === 'url' || item.pageId !== pageId
+  const footer = site.settings?.footerConfig
   return {
     ...site,
     pages: site.pages
@@ -19,11 +22,12 @@ export function removePage(site, pageId) {
             : block
         ),
       })),
-    navigation: site.navigation
-      .filter((item) => item.pageId !== pageId)
-      .map((item) => ({
-        ...item,
-        children: item.children.filter((child) => child.pageId !== pageId),
-      })),
+    navigation: site.navigation.filter(keeps).map((item) => ({
+      ...item,
+      children: item.children.filter(keeps),
+    })),
+    settings: footer?.links
+      ? { ...site.settings, footerConfig: { ...footer, links: footer.links.filter(keeps) } }
+      : site.settings,
   }
 }

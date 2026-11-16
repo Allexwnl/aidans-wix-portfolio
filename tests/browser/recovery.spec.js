@@ -1,4 +1,4 @@
-/** Hersteltests — versie 1.0 | Laatst gewijzigd: 2026-10-29. Conflicten en ongeldige publicaties. */
+/** Hersteltests — versie 1.1 | Laatst gewijzigd: 2026-11-16. Conflicten en ongeldige publicaties. */
 import { test, expect } from '@playwright/test'
 
 // Een achterhaald tabblad mag een nieuw opgeslagen concept niet overschrijven.
@@ -17,6 +17,8 @@ test('twee tabbladen detecteren een revisieconflict', async ({ page, context }) 
   await second.frameLocator('iframe.canvas-frame').locator('h1').fill('Versie uit tabblad twee')
   await second.getByRole('button', { name: 'Concept nu opslaan' }).click()
   await expect(second.getByRole('alert')).toContainText('ander tabblad')
+  // Een mislukte opslag biedt direct een herstelactie aan.
+  await expect(second.getByRole('button', { name: 'Opnieuw proberen' })).toBeVisible()
   expect(
     await page.evaluate(
       () => JSON.parse(localStorage.getItem('aidan:draft')).site.pages[0].sections[0].title
@@ -37,6 +39,28 @@ test('ongeldige pagina-URL houdt de vorige publicatie intact', async ({ page }) 
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('aidan:live')).site.pages[0].slug)
   ).toBe('')
+})
+
+// De werkbalk laat zien of het concept afwijkt van wat bezoekers zien, ook na terugzetten.
+test('publicatiestatus volgt bewerken, publiceren en terugzetten', async ({ page }) => {
+  await page.goto('/studio?demo=1')
+  const title = page.frameLocator('iframe.canvas-frame').locator('h1')
+  const state = page.locator('.publish-state')
+  await expect(title).toBeVisible()
+  await expect(state).toHaveText('Nog niet gepubliceerd')
+  await page.getByRole('button', { name: 'Publiceren', exact: true }).click()
+  await expect(state).toHaveText('Live is actueel')
+  await title.fill('Tweede versie')
+  await expect(state).toHaveText('Wijzigingen nog niet live')
+  await page.getByRole('button', { name: 'Publiceren', exact: true }).click()
+  await expect(state).toHaveText('Live is actueel')
+  // Terugzetten maakt de eerste release live; het concept wijkt daar dan van af.
+  await page.getByRole('button', { name: 'Instellingen', exact: true }).click()
+  await page.getByRole('button', { name: 'Vorige publicatie herstellen' }).click()
+  await page.getByRole('button', { name: 'Doorgaan →' }).click()
+  await expect(page.getByRole('status')).toContainText('teruggezet')
+  await expect(state).toHaveText('Wijzigingen nog niet live')
+  await expect(page.locator('.publish-note')).toContainText('nog niet live')
 })
 
 // De website behoudt een bruikbaar menu en blijft binnen een echte mobiele viewport.

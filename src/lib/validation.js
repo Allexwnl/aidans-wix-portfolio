@@ -1,6 +1,7 @@
-/** Validatie — versie 2.0 | Laatst gewijzigd: 2026-11-04. Veilige bronnen en publicatiecontrole. */
+/** Validatie — versie 2.1 | Laatst gewijzigd: 2026-11-16. Veilige bronnen en publicatiecontrole. */
 import { validateFonts } from './fonts.js'
 import { validateBlocks } from './blockValidation.js'
+import { validateLink } from './links.js'
 // Accepteert alleen echte YouTube-hosts en geldige video-identificaties.
 export function youtubeId(value = '') {
   try {
@@ -79,9 +80,14 @@ export function validateSite(site) {
     if (!Array.isArray(page.sections)) throw new Error('Deze pagina mist bouwstenen.')
     validateBlocks(page.sections, fonts)
   }
-  for (const item of site.navigation.flatMap((item) => [item, ...(item.children || [])]))
-    if (!site.pages.some((page) => page.id === item.pageId))
-      throw new Error(`De menulink ${item.label} verwijst naar een ontbrekende pagina.`)
+  // Menu-, submenu- en footerlinks moeten naar een bestaande pagina, sectie of veilige URL wijzen.
+  const footerLinks = site.settings?.footerConfig?.links || []
+  if (!Array.isArray(footerLinks)) throw new Error('De footer bevat ongeldige links.')
+  for (const item of [
+    ...site.navigation.flatMap((item) => [item, ...(item.children || [])]),
+    ...footerLinks,
+  ])
+    validateLink(item, site)
   if (!slugs.has('')) throw new Error('Een pagina moet de lege URL hebben als homepage.')
   return site
 }

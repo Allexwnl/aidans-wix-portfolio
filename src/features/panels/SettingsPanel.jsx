@@ -1,4 +1,4 @@
-/** Instellingen — versie 1.0 | Laatst gewijzigd: 2026-10-29. Opslagmodus, export en herstel. */
+/** Instellingen — versie 1.1 | Laatst gewijzigd: 2026-11-16. Opslagmodus, export en herstel. */
 import { Download, RotateCcw, Upload, ExternalLink } from 'lucide-react'
 import { firebaseReady } from '../../services/firebase.js'
 
@@ -40,6 +40,14 @@ export function SettingsPanel({ model, action }) {
             ? `Laatst gepubliceerd: ${new Date(model.liveAt).toLocaleString('nl-NL')}`
             : 'Nog niet gepubliceerd.'}
         </p>
+        {/* Maakt zichtbaar of het concept afwijkt van de hoofdwebsite. */}
+        {model.liveAt && (
+          <p className="helper-text publish-note">
+            {model.unpublished
+              ? 'Je concept bevat wijzigingen die nog niet live staan.'
+              : 'De hoofdwebsite is gelijk aan je concept.'}
+          </p>
+        )}
         <a className="button secondary wide" href="/" target="_blank" rel="noreferrer">
           Hoofdwebsite openen
           <ExternalLink size={12} />

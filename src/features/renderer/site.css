@@ -1500,3 +1500,122 @@ summary:focus-visible,
     opacity: 1 !important;
   }
 }
+/* Animatiesterkte: zoom, uitzoomen en onscherpte schalen mee met de ingestelde afstand. */
+.motion-zoom:not(.in-view) {
+  transform: scale(calc(1 - 0.04 * var(--motion-strength, 1)));
+}
+.motion-scale-out:not(.in-view) {
+  transform: scale(calc(1 + 0.12 * var(--motion-strength, 1)));
+}
+.motion-soft-focus:not(.in-view) {
+  filter: blur(calc(12px * var(--motion-strength, 1)));
+}
+/* Na elkaar verschijnen: elk genummerd onderdeel start een stap later dan het vorige. */
+.motion-stagger [data-stagger] {
+  transition:
+    opacity var(--motion-duration, 800ms) var(--motion-easing, ease),
+    transform var(--motion-duration, 800ms) var(--motion-easing, ease);
+  transition-delay: calc(var(--motion-delay, 0ms) + var(--stagger-index, 0) * 120ms);
+}
+.motion-stagger:not(.in-view) [data-stagger] {
+  opacity: 0;
+  transform: translateY(var(--motion-distance, 45px));
+}
+/* In de bewerkmodus blijft alles zichtbaar, ook na de bovenstaande sterkte- en volgorderegels. */
+.motion-editing:not(.in-view),
+.motion-editing:not(.in-view) [data-stagger] {
+  transform: none;
+  opacity: 1;
+  clip-path: none;
+  filter: none;
+}
+/* Minder beweging: genummerde onderdelen staan direct op hun plek. */
+@media (prefers-reduced-motion: reduce) {
+  .motion-stagger [data-stagger] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+/* Footerlinks: naast elkaar, op smalle schermen afbrekend zonder horizontale overflow. */
+.site-footer {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.footer-links a {
+  color: inherit;
+  text-decoration: none;
+}
+.footer-links a:hover,
+.footer-links a:focus-visible {
+  text-decoration: underline;
+}
+.footer-links a > span {
+  margin-left: 4px;
+}
+/* Fotolabel (onbewerkt/bewerkt): klein kenmerk linksboven op de foto. */
+.image-block,
+.gallery-track figure {
+  position: relative;
+}
+.photo-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--site-bg) 85%, transparent);
+  color: var(--site-fg);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Galerij als raster of lijst: geen horizontale scroll, kolommen per apparaat instelbaar. */
+.gallery-track.gallery-grid,
+.gallery-track.gallery-list {
+  display: grid;
+  grid-template-columns: repeat(var(--gallery-columns, 3), minmax(0, 1fr));
+  overflow: visible;
+  scroll-snap-type: none;
+}
+.gallery-track.gallery-list {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Paginapunten: ruim klikvlak met een kleine zichtbare stip. */
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 12px;
+}
+.gallery-dots button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+}
+.gallery-dots button::before {
+  content: '';
+  display: block;
+  width: 7px;
+  height: 7px;
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+.gallery-dots button[aria-current='true']::before {
+  background: currentColor;
+}
+@media (max-width: 600px) {
+  .gallery-track.gallery-grid {
+    grid-template-columns: repeat(var(--mobile-gallery-columns, 1), minmax(0, 1fr));
+  }
+}

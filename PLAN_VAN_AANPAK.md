@@ -1,7 +1,7 @@
 ﻿# Plan van aanpak — Aidans portfolio-websitebouwer
 
-Versie: 5.0  
-Laatst gewijzigd: 4 november 2026  
+Versie: 5.1  
+Laatst gewijzigd: 16 november 2026  
 Status: eerste lokale bouwer geïmplementeerd. Firebase- en GitHub-serveraansluiting vereisen nog accountinrichting; zie README.md.
 
 ## Actuele implementatie
@@ -10,9 +10,21 @@ Inigo is de primaire richting voor filmische videopresentatie, grote beelden en 
 
 De aangeleverde Firebase-webconfiguratie staat in de genegeerde `.env.local`. Firebase Authentication/Firestore en een beveiligde GitHub-Worker zijn geïmplementeerd, maar de provider, admin-UID, Rules en Worker-secrets moeten nog in de accounts worden ingericht. `Allexwnl/aidans-portfolio` is de coderepository; foto's gaan in aparte mediarepositories. Aanmaken en kiezen van die bronnen is voorbereid in dashboard en API, met aparte serverrechten. Een eigen Netlify-site aidans-portfolio-studio is aangemaakt en de publieke Firebase-buildconfiguratie is aangesloten. De foto-Worker is nog niet gedeployd. Er is geen nieuwe GitHub-repository aangemaakt.
 
-De editoruitbreiding is ge?mplementeerd: containers tot 12 niveaus, genest verplaatsen/kopi?ren, canvasgrepen, aparte mobiele indeling, woordopmaak, links, uitgebreide typografie en gecontroleerde fontuploads. De filmuitbreiding bevat projectgegevens onder groot filmbeeld, bioscoopweergave, scrolluitbreiding/parallax, extra onthullingen en paginaovergangen. Nog open: live geteste cloudintegraties en grote productie-videoexports. Secties kunnen worden geordend en onderdelen binnen composities kunnen op het canvas worden verschoven, met aparte mobiele offsets. De lokale Git-repository is geïnitialiseerd met `Allexwnl/aidans-portfolio` als origin; er is niets gepusht. De onderstaande hoofdstukken blijven de richting voor verdere uitbreiding. Zie README.md voor starten, bedienen en aansluiten.
+De editoruitbreiding is geïmplementeerd: containers tot 12 niveaus, genest verplaatsen/kopiëren, canvasgrepen, aparte mobiele indeling, woordopmaak, links, uitgebreide typografie en gecontroleerde fontuploads. De filmuitbreiding bevat projectgegevens onder groot filmbeeld, bioscoopweergave, scrolluitbreiding/parallax, extra onthullingen en paginaovergangen. Nog open: live geteste cloudintegraties en grote productie-videoexports. Secties kunnen worden geordend en onderdelen binnen composities kunnen op het canvas worden verschoven, met aparte mobiele offsets. De lokale Git-repository is geïnitialiseerd met `Allexwnl/aidans-portfolio` als origin; er is niets gepusht. De onderstaande hoofdstukken blijven de richting voor verdere uitbreiding. Zie README.md voor starten, bedienen en aansluiten.
 
 Aanvullingen van 4 november: onderdelen afzonderlijk aan/uit zonder inhoud te wissen, vier navbarvarianten met kleur- en zichtbaarheidkeuzes, richting/afstand voor transforms, paginaovergangen voor browsergeschiedenis en snelle klikken, en lokaal bewaarde versleepbare/inklapbare zijpanelen. Netlify wordt vanuit deze projectmap bijgewerkt; automatische GitHub-deployments wachten op een eerste push. Firebase meldde bij de aansluitcontrole dat de Firestore API nog niet actief is.
+
+Aanvullingen van 16 november:
+
+- **Animaties:** startmoment kiezen (in beeld, pas verder in beeld, direct bij openen), nieuw effect 'Na elkaar verschijnen', sterkte die ook zoom, kanteling en onscherpte schaalt, en een aparte mobiele animatie per bouwsteen (effect, duur, vertraging, sterkte). Zonder IntersectionObserver blijft niets verborgen; onbekende animaties worden bij publiceren en importeren geweigerd.
+- **Menu en footer:** menulinks, submenu's en footerlinks kunnen naar een pagina, een sectie op een pagina of een externe URL wijzen. De footer heeft eigen kleuren, links en aan/uit voor woordmerk, jaartal en de hele footer (Navigatie → Footer).
+- **Afbeeldingen:** alttekst, verhouding, vullen of hele foto, focuspunt en optioneel label onbewerkt/bewerkt, voor de afbeeldingsbouwsteen en per galerijfoto.
+- **Galerij:** carousel, raster of lijst; kolommen apart voor desktop en mobiel; paginapunten bij de carousel.
+- **Voorbeeld:** tabletvoorbeeld (820 px) naast desktop en mobiel.
+- **Opslaan en publiceren:** werkbalk en Instellingen tonen of het concept afwijkt van de live website, ook na terugzetten; een mislukte opslag heeft 'Opnieuw proberen'.
+- **Tests:** de browsertests gebruiken eigen nepwaarden voor Firebase en hangen niet meer af van `.env.local`.
+
+De actuele stand per fase en wat nog open staat, staat in hoofdstuk 10 onder 'Stand van de roadmap'.
 
 ## 1. Doel en gemaakte keuzes
 
@@ -218,6 +230,23 @@ Deze richtingen worden optionele startontwerpen en presets. Exacte animaties/tim
 | 7. Motion | Intro, element-/sectiepresets, paginatransities en mobiele overrides. | Animaties zijn vanuit de editor te kiezen en opnieuw te bekijken; mobiel blijft vloeiend. |
 | 8. Opslaguitbreiding en video-exportproef | Nieuwe GitHub-opslagbron vanuit dashboard; resolutie-export met lokale bron testen. | Foto's blijven werken over meerdere bronnen; een echte filmexport slaagt of de nodige lokale helper is concreet gespecificeerd. |
 | 9. Afronden en overdragen | Rechten, toegankelijkheid, prestaties, herstel, export en handleiding. | Aidan kan vanaf een lege pagina zelfstandig bouwen, opslaan, voorbeeld bekijken en publiceren. |
+
+### Stand van de roadmap (16 november 2026)
+
+| Fase | Stand | Nog open |
+| --- | --- | --- |
+| 0. Technische proef | Deels | Firestore-database, Email/Password, Rules en admin-document in het Firebase-account; foto-Worker deployen. Dit kan alleen de accounteigenaar. |
+| 1. Dashboard en documentschema | Klaar | — |
+| 2. Visuele bouwer | Klaar | — |
+| 3. Thema en navigatie | Klaar | Submenu-items onderling ordenen; een hoofdmenu-item met submenu heeft zelf geen eigen link. |
+| 4. Responsive en voorbeeld | Klaar | Aparte mobiele zichtbaarheid en volgorde per bouwsteen; er is één breakpoint (600 px), tablet volgt de desktopindeling. |
+| 5. Opslag en publicaties | Klaar (lokaal getest) | Controle met het echte Firebase-account; tests voor de Security Rules (vereist Java voor de emulator). |
+| 6. Portfolio en media | Grotendeels | Gebruik per afbeelding, uploadvoortgang/annuleren, slepen naar de bibliotheek; controle of een YouTube-video insluitbaar is met een fallback. |
+| 7. Motion | Klaar | Beoordeling van timing op een echte telefoon. |
+| 8. Opslaguitbreiding en video-exportproef | Deels | Opslagbron aanmaken is voorbereid maar niet met een echt account getest; export is alleen met een korte clip bewezen. |
+| 9. Afronden en overdragen | Open | Echte apparaten en Safari/Firefox, toegankelijkheidsronde, handleiding, Aidans eigen beelden in plaats van de voorbeeldfoto's. |
+
+Volgorde voor het vervolg: eerst fase 0 afronden in de accounts (blokkeert echte opslag en foto's), daarna de open punten van fase 6, dan mobiele zichtbaarheid/volgorde uit fase 4 en tot slot fase 9.
 
 Dit is meer werk dan het eerdere plan met vaste secties. We leveren verticaal werkende onderdelen op, zonder de eerste vaste portfolio-layout als eindresultaat te presenteren. De visuele bouwer, submenu's, opslagkeuze en publicatie zijn kernfuncties. Willekeurige third-party plugins en gelijktijdig samenwerken zijn geen onderdeel van de eerste versie.
 
