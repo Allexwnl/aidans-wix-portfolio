@@ -10,7 +10,7 @@
     // Openbare mediarepository voor foto's; de code staat in Allexwnl/aidans-wix-portfolio.
     "MEDIA_REPO": "Allexwnl/aidans-portfolio",
     // Firebase-UID's van de beheerders, gescheiden door een komma; dezelfde als de documenten in admins/.
-    "ADMIN_UID": "nY83yhjg29RcK8zGtKXBwoI4B343,9BI6fIEnPoUYI6DyEzxVeJHMzV43",
+    "ADMIN_UID": "nY83yhjg29RcK8zGtKXBwoI4B343,gq9kgw2mj4WAnphqcp3ZcXDX4A72",
     "ALLOW_CREATE_SOURCES": "false"
   }
 }
